@@ -2,11 +2,15 @@ from django.db import models
 from django.conf import settings
 
 
+# TODO: maybe add Actor/Director model?
+
+
 class Genre(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
 
 
+# TODO: add maturity rating (0+, teens, 18+)
 class Movie(models.Model):
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=200)

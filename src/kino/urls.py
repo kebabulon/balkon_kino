@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from kino import views
 
-from . import views
+router = DefaultRouter()
+router.register(r"movies", views.MovieViewSet, basename="movie")
+router.register(r"genres", views.GenreViewSet, basename="genre")
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", include(router.urls)),
 ]
