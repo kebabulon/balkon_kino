@@ -10,10 +10,23 @@ class Genre(models.Model):
     description = models.CharField(max_length=200)
 
 
-# TODO: add maturity rating (0+, teens, 18+)
 class Movie(models.Model):
+    MATURITY_RATINGS = {
+        "G": "General Audiences",
+        "PG": "Parental Guidance Suggested",
+        "PG-13": "Parents Strongly Cautioned",
+        "R": "Restricted",
+        "NC-17": "Adults only",
+    }
+
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=200)
+    release_date = models.PositiveIntegerField()
+    maturity_rating = models.CharField(
+        max_length=5,
+        choices=MATURITY_RATINGS,
+    )
+    runtime = models.DurationField()
     genres = models.ManyToManyField(Genre)
 
 

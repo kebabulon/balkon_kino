@@ -26,5 +26,8 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
             "id",
             "title",
             "description",
+            "release_date",
+            "maturity_rating",
+            "runtime",
             "genres",
         ]
