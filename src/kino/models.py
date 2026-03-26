@@ -33,10 +33,20 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre)
 
 
-# TODO: create Subscription model
-# class Subscription(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class Subscription(models.Model):
+    SUBSCRIPTION_PLAN = {
+        "1": "Basic"
+        "2": "Pro",
+        "3": "Ultra Mega Pro++ Premium",
+    }
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subscription_plan = models.CharField(
+        max_length=1,
+        choices=SUBSCRIPTION_PLAN,
+    )
+    expiration_date = models.DateTimeField()
+    
 
 class Watchlist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
