@@ -31,3 +31,13 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
             "runtime",
             "genres",
         ]
+
+
+class WatchlistSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Watchlist
+        fields = [
+            "user",
+            "movie",
+            "created_at",
+        ]

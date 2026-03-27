@@ -68,3 +68,20 @@ class SubscriptionAdmin(admin.ModelAdmin):
         from django.utils import timezone
         return subscription.expiration_date > timezone.now()
     is_valid.boolean = True
+
+
+@admin.register(Watchlist)
+class WatchlistAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "movie",
+        "created_at",
+    )
+    list_filter = ("created_at",)
+    search_fields = (
+        "name",
+        "movie",
+    )
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at",)

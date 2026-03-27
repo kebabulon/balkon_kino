@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.conf import settings
 
@@ -32,6 +33,9 @@ class Movie(models.Model):
     runtime = models.DurationField()
     genres = models.ManyToManyField(Genre)
 
+    def __str__(self):
+        return f"{self.title}"
+
 
 class Subscription(models.Model):
     SUBSCRIPTION_PLAN = {
@@ -46,8 +50,12 @@ class Subscription(models.Model):
         choices=SUBSCRIPTION_PLAN,
     )
     expiration_date = models.DateTimeField()
-    
+
 
 class Watchlist(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="watchlist")
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="watchlist")
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ["user", "movie"]
