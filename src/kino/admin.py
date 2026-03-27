@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from kino.models import Movie, Genre, Watchlist
+from kino.models import Movie, Genre, Watchlist, Subscription
 
 
 @admin.register(Movie)
@@ -43,3 +43,28 @@ class GenreAdmin(admin.ModelAdmin):
         "description"
     )
     ordering = ("name",)
+
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "subscription_plan",
+        "expiration_date",
+        "is_valid",
+    )
+    list_filter = (
+        "subscription_plan",
+        "expiration_date",
+    )
+    search_fields = (
+        "user",
+    )
+    ordering = ("-expiration_date",)
+    readonly_fields = ("is_valid",)
+
+    def is_valid(self, subscription):
+        from django.utils import timezone
+        return subscription.expiration_date > timezone.now()
+    is_valid.boolean = True

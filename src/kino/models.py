@@ -35,7 +35,7 @@ class Movie(models.Model):
 
 class Subscription(models.Model):
     SUBSCRIPTION_PLAN = {
-        "1": "Basic"
+        "1": "Basic",
         "2": "Pro",
         "3": "Ultra Mega Pro++ Premium",
     }
