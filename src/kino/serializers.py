@@ -34,6 +34,9 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class WatchlistSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+
     class Meta:
         model = Watchlist
         fields = [

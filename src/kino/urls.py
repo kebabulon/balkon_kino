@@ -9,4 +9,5 @@ router.register(r"watchlist", views.WatchlistViewSet, basename="watchlist")
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls")),
 ]

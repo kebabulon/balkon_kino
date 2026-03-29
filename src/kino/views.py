@@ -43,7 +43,7 @@ class WatchlistViewSet(viewsets.ModelViewSet):
         return Watchlist.objects.filter(user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        movie_id = request.data.get("movie_id")
+        movie_id = request.data.get("movie")
         if not movie_id:
             return Response(
                 {"detail": "movie_id обязателен"},
