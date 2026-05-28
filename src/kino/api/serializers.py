@@ -1,9 +1,6 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from kino.models import Movie, Genre, Watchlist
-from kino.serializers import Genre
 
-User = get_user_model()
+from kino.models import Genre, Movie, Watchlist
 
 
 class GenreSerializer(serializers.HyperlinkedModelSerializer):
@@ -16,7 +13,7 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
     genres = serializers.SlugRelatedField(
         many=True,
         slug_field="name",
-        queryset=Genre.objects.all()
+        queryset=Genre.objects.all(),
     )
 
     class Meta:
@@ -34,7 +31,10 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class WatchlistSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    user = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+        default=serializers.CurrentUserDefault(),
+    )
     movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
 
     class Meta:
@@ -44,3 +44,7 @@ class WatchlistSerializer(serializers.HyperlinkedModelSerializer):
             "movie",
             "created_at",
         ]
+
+
+class WatchlistCheckSerializer(serializers.Serializer):
+    movie_id = serializers.IntegerField(min_value=1)
