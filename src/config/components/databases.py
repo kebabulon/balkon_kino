@@ -1,4 +1,4 @@
-from config.settings import BASE_DIR
+from config.components.env import BASE_DIR
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -6,6 +6,6 @@ from config.settings import BASE_DIR
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR.parent / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
