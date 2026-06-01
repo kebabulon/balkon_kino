@@ -7,4 +7,6 @@ dependencies = [
     "django",
     "django-rest-framework",
     "django-split-settings",
+    "flask",
+    "requests",
 ]
