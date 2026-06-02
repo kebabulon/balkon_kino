@@ -5,7 +5,11 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir fastapi uvicorn
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn \
+    pyjwt \
+    pwdlib
 
 COPY ./recommendation_service /app/recommendation_service
 
