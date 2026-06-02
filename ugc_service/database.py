@@ -29,7 +29,26 @@ class Database:
             self._next_id += 1
             return item
 
- 
+    def list_for_movie(self, movie_id):
+        with self.lock:
+            return [item for item in self.items.values() if item.movie_id == movie_id]
+
+    def get(self, item_id):
+        with self.lock:
+            try:
+                return self.items[item_id]
+            except KeyError:
+                raise ReviewNotFoundError()
+
+    def update_status(self, item_id, status, moderation_note=None):
+        now = datetime.now(timezone.utc)
+        with self.lock:
+            item = self.get(item_id)
+            item.status = status
+            item.moderation_note = moderation_note
+            item.updated_at = now
+            return item
+            
     def clear(self):
         with self.lock:
             self.items.clear()
