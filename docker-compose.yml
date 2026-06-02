@@ -1,0 +1,29 @@
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    container_name: balkon_kino_django
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DJANGO_DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost,django"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+      - ./db.sqlite3:/app/db.sqlite3
+
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
+    container_name: balkon_kino_flask
+    environment:
+      DJANGO_API_BASE_URL: "http://django:8000/api"
+    depends_on:
+      - django
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
