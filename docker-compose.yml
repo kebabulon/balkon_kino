@@ -33,6 +33,8 @@ services:
       context: .
       dockerfile: Dockerfile.fastapi
     container_name: balkon_kino_fastapi
+    environment:
+      DJANGO_API_BASE_URL: "http://django:8000/api"
     ports:
       - "8001:8001"
     volumes:

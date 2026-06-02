@@ -2,6 +2,8 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
 
 from kino.api.serializers import (
     GenreSerializer,
@@ -78,3 +80,14 @@ class WatchlistViewSet(viewsets.ModelViewSet):
             movie_id=serializer.validated_data["movie_id"],
         )
         return Response({"in_watchlist": exists})
+
+
+@api_view(['POST'])
+def verify_user(request):
+    """Эндпоинт для проверки логина/пароля (используется FastAPI)"""
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(username=username, password=password)
+    if user:
+        return Response({'id': user.id, 'username': user.username})
+    return Response({'error': 'Invalid credentials'}, status=401)

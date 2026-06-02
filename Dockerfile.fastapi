@@ -9,7 +9,9 @@ RUN pip install --no-cache-dir \
     fastapi \
     uvicorn \
     pyjwt \
-    pwdlib
+    'pwdlib[argon2,bcrypt]' \
+    pydantic-settings \
+    httpx
 
 COPY ./recommendation_service /app/recommendation_service
 
