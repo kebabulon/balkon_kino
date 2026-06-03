@@ -48,3 +48,9 @@ class WatchlistSerializer(serializers.HyperlinkedModelSerializer):
 
 class WatchlistCheckSerializer(serializers.Serializer):
     movie_id = serializers.IntegerField(min_value=1)
+
+
+class PopularitySerializer(serializers.Serializer):
+    movie_id = serializers.IntegerField()
+    movie__title = serializers.CharField()
+    count = serializers.IntegerField()

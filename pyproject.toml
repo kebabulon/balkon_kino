@@ -7,6 +7,11 @@ dependencies = [
     "django",
     "django-rest-framework",
     "django-split-settings",
+    "fastapi>=0.136.3",
     "flask",
+    "pwdlib>=0.3.0",
+    "pydantic-settings>=2.14.1",
+    "pyjwt>=2.13.0",
     "requests",
+    "uvicorn>=0.48.0",
 ]
