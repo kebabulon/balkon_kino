@@ -2,16 +2,18 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.viewsets import GenericViewSet
 from django.contrib.auth import authenticate
+from django.db.models import Count
 
 from kino.api.serializers import (
     GenreSerializer,
     MovieSerializer,
     WatchlistCheckSerializer,
     WatchlistSerializer,
+    PopularitySerializer,
 )
-from kino.models import Genre, Movie
+from kino.models import Genre, Movie, Watchlist
 from kino.permissions import IsAdminUserOrReadOnly
 from kino.services.watchlist import (
     add_movie_to_watchlist,
@@ -37,6 +39,15 @@ class MovieViewSet(viewsets.ModelViewSet):
         if release_date:
             queryset = queryset.filter(release_date=release_date)
         return queryset
+
+    @action(detail=False, methods=['get'])
+    def by_genre(self, request):
+        genre = request.query_params.get('genre')
+        if not genre:
+            return Response({"error": "genre param required"}, status=400)
+        movies = Movie.objects.filter(genres__name__iexact=genre)
+        serializer = self.get_serializer(movies, many=True)
+        return Response(serializer.data)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -81,13 +92,41 @@ class WatchlistViewSet(viewsets.ModelViewSet):
         )
         return Response({"in_watchlist": exists})
 
+    @action(detail=False, methods=['get'], url_path='by-user')
+    def by_user(self, request):
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "user_id required"}, status=400)
+        watchlist_items = Watchlist.objects.filter(user_id=user_id).select_related('movie')
+        data = []
+        for item in watchlist_items:
+            movie = item.movie
+            data.append({
+                'id': movie.id,
+                'title': movie.title,
+                'genres': list(movie.genres.values_list('name', flat=True)),
+                'added_at': item.created_at
+            })
+        return Response(data)
 
-@api_view(['POST'])
-def verify_user(request):
-    """Эндпоинт для проверки логина/пароля (используется FastAPI)"""
-    username = request.data.get('username')
-    password = request.data.get('password')
-    user = authenticate(username=username, password=password)
-    if user:
-        return Response({'id': user.id, 'username': user.username})
-    return Response({'error': 'Invalid credentials'}, status=401)
+
+class UserViewSet(GenericViewSet):
+    permission_classes = []
+
+    @action(detail=False, methods=['post'], url_path='verify')
+    def verify(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            return Response({'id': user.id, 'username': user.username})
+        return Response({'error': 'Invalid credentials'}, status=401)
+
+
+class PopularMoviesViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PopularitySerializer
+
+    def get_queryset(self):
+        return Watchlist.objects.values('movie_id', 'movie__title') \
+            .annotate(count=Count('movie_id')) \
+            .order_by('-count')[:5]
